@@ -1,0 +1,50 @@
+default_stages: [commit, push]
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.0.0
+  hooks:
+  - id: check-added-large-files
+    args: [--maxkb=500]
+  - id: check-byte-order-marker
+  - id: check-case-conflict
+  - id: check-json
+    exclude: docs/.
+  - id: check-merge-conflict
+  - id: check-symlinks
+  - id: debug-statements
+  - id: detect-private-key
+  - id: end-of-file-fixer
+  - id: mixed-line-ending
+    args: [--fix=lf]
+  - id: requirements-txt-fixer
+  - id: trailing-whitespace
+- repo: local
+  hooks:
+  - id: isort
+    entry: isort
+    language: python
+    types: [python]
+    name: isort
+    additional_dependencies: [isort]
+- repo: https://github.com/ambv/black
+  rev: 20.8b1
+  hooks:
+  - id: black
+- repo: git://github.com/Lucas-C/pre-commit-hooks-bandit
+  rev: v1.0.4
+  hooks:
+  - id: python-bandit-vulnerability-check
+    name: bandit
+    description: Python code vulnerabilities checker
+    language: python
+    types: [python]
+    entry: bandit
+    args: [-lll, --recursive, --exclude=.venv .]
+    files: ''
+- repo: https://gitlab.com/pycqa/flake8
+  rev: 3.8.1
+  hooks:
+    - id: flake8
+      additional_dependencies: [flake8, flake8-bugbear, flake8-docstrings]
+      args: [--docstring-convention, google, --doctests, --filename, "['stream_processor/*', 'publisher/*']"]
+      types: [python]
