@@ -10,11 +10,11 @@ import apache_beam as beam
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that, equal_to
 
-from stream_processor.dataflow.pipeline_utils.stream_processor_dofns import (
+from stream_processor.beam.pipeline_utils.stream_processor_dofns import (
     FlatMapDofns,
     MessagePreprocessorDoFn,
 )
-from stream_processor.dataflow.schemas.pageview import SCHEMA_PAGEVIEW
+from stream_processor.beam.schemas.pageview import SCHEMA_PAGEVIEW
 
 
 class TestStreamProcessorDoFns(unittest.TestCase):

@@ -25,34 +25,44 @@ stream_processor
 2. Create a google cloud project [here](https://cloud.google.com/free). The $300 free credit should be enough.
 3. Create a service account with an `Editor` role and download the service account key
 4. Copy the key into `env/sa/sa_local.json`. Note the folder names and create if needed
- 
-## How to use
-📢 **Always check the `results` folder for output**
 
+## How to use
 ```bash
+# Clone the public repository and cd into it
+git clone git@github.com:opeoluwabanwo/stream_processor.git
+
+
 # Create local dev. environment
 make raise
+
 
 # Provison GCP cloud infrastructure. This is required if
 # the application is to be deployed on GCP.
 make provision
 
+
 # Run tests (unit and functional tests). The functional test essentially
 # mocks the streaming data and runs the pipeline. Results are available in
-# the results folder (for instance aggregates-*).
+# the results folder (fpattern is aggregates-*).
 make run-tests
+
 
 # Recommended for local (direct) runner
 # This runs the stream processor app to consume pubsub messages and
-# dumps the outputs into the results folder in the root directory.
+# dumps the outputs into the results folder (pattern is beam-temp-*) in the root directory.
 # Note that this is set to use directrunner if you want to run in the cloud
 # remove the --runnner arg (default is set to DataflowRunner) and provide a bucket as # output path e.g --output_path gs://stream-processor/results.
 make run-app-with-pubsub
 
+
 # Not Recommended for local (direct) runner  due to issue https://issues.apache.org/jira/browse/BEAM-11991
 # However it works using the DataflowRunnner. In this case, remove the --runnner arg (default is set to DataflowRunner) and provide a bucket as output path e.g --output_path gs://stream-processor/results
 make run-app-with-kafka
+
+# Stop container (terminates all processes)
+make reset
 ```
+📢 **Always check the `results` folder for output**
 
 ## Pending Issues
-1. There is an open issue with using the local (direct) runner  with the python sdk due tracked [here](https://issues.apache.org/jira/browse/BEAM-11991). However it works using the `DataflowRunnner`. In this case, remove the `--runnner` arg (default is set to DataflowRunner) and provide a bucket as output path e.g --output_path `gs://stream-processor/results`
+1. There is an open issue with using the local (direct) runner of the python sdk with the kafka read/write transforms tracked [here](https://issues.apache.org/jira/browse/BEAM-11991). However it works using the `DataflowRunnner`. In this case, remove the `--runnner` arg (default is set to DataflowRunner) and provide a bucket as output path e.g --output_path `gs://stream-processor/results`

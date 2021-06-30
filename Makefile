@@ -50,8 +50,8 @@ run-app-with-kafka:
 	@echo "# Run the stream processor app (consumes kafka messsages)"
 	docker exec --detach stream-processor-cont bash -c 'cd /app/infrastructure/scripts && source config.sh && cd /app && python stream_processor/beam/stream_processor.py --runner DirectRunner --streaming_engine kafka'
 
-reset: ## Stop all running containers
-	@echo "# Stop running containers"
+reset: ## Stop container (terminates all processes)
+	@echo "# Stop running container"
 	docker rm -f stream-processor-cont
 
 .PHONY: help raise reset run-tests
