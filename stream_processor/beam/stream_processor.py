@@ -1,8 +1,13 @@
+"""Stream processing beam pipeline.
+
+This module contains cloud agnostic logic for processing and
+transforming pageviews using apache beam.
+"""
 import argparse
 import logging
 import typing
 
-from apache_beam import Create, DoFn, FlatMap, Map, ParDo, Pipeline, io
+from apache_beam import Create, FlatMap, Map, ParDo, Pipeline, io
 from apache_beam.io.kafka import ReadFromKafka
 from pipeline_utils.pipeline_options_builder import PipelineOptionsBuilder
 from pipeline_utils.stream_processor_dofns import (
@@ -26,6 +31,8 @@ def run(
     )
 
     with Pipeline(options=pipeline_options) as pipeline:
+        # This can read from various streaming engines depending on the
+        # streaming_engine parameter
         if streaming_engine == "kafka":
             messages = (
                 pipeline
@@ -55,13 +62,20 @@ def run(
                 FlatMapDofns.generate_pageviews()
             ).with_output_types(typing.Tuple[bytes, bytes])
 
+        # Validate messages against predefined schema and decode from bytes.
         decoded_messages = messages | "Decode and validate messages" >> ParDo(
             MessagePreprocessorDoFn(SCHEMA_PAGEVIEW)
         ).with_outputs("valid", "invalid")
 
+        # Passthrough, writes valid messages to the local filesystem or a gcs bucket
+        # without applying transformation
         _ = decoded_messages.valid | "Write Stream to GCS/Local " >> io.WriteToText(
             f"{output_path}/passthrough"
         )
+
+        # Group and aggregate valid messages. Results are written to
+        # either the local filesystem or a gcs bucket based on the value
+        # of output path
         _ = (
             decoded_messages.valid
             | "Group Messages" >> GroupMessagesByFixedWindows(window_size, num_shards)
@@ -71,9 +85,9 @@ def run(
             >> io.WriteToText(f"{output_path}/aggregates")
         )
 
+        # Store invalid messages. In production this should be recycled to a hospital/dead-letter topic
         _ = (
             decoded_messages.invalid
-            # In production this should be recycled to a hospital/dead-letter topic
             | "Write Bad Records to GCS/Local"
             >> io.WriteToText(f"{output_path}/bad_records")
         )

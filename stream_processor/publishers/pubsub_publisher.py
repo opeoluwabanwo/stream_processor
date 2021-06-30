@@ -1,3 +1,5 @@
+"""Logic for pubsub publisher."""
+
 import os
 import threading
 import time
@@ -19,10 +21,12 @@ class Publisher(threading.Thread):
         self._stop_event.set()
 
     def run(self):
+        # Publish pageview evets every 0.001 secs (100k in 100secs)
         while not self._stop_event.is_set():
             pageview = self._data_generator.generate_pageview()
             self._publisher.publish(self._input_topic, pageview, encoding="utf8")
-            time.sleep(5)
+            time.sleep(0.001)
+
 
 if __name__ == "__main__":
     project = os.getenv("GCP_PROJECT_ID")

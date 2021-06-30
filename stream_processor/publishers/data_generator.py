@@ -1,13 +1,17 @@
+"""Random webpage view event generator."""
+
 from json import dumps
 
 from faker import Faker
 
 
 class RandomDataGenerator:
-    def __init__(self, locale: str) -> None:
+    """Encapsulates logic for generating random event streams."""
+
+    def __init__(self, locale):
         self._fake = Faker(locale)
 
-    def generate_pageview(self) -> bytes:
+    def generate_pageview(self):
         webpage = f"www.website.com/{self._fake.uri_path()}.html"
         postcode = self._fake.postcode().split()[0]
         data = {

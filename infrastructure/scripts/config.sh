@@ -8,7 +8,7 @@ export APPLICATION_NAME="stream-processor"
 export GCP_REGION="europe-west2"
 export GCP_ZONE="europe-west2-b"
 export GCP_REGION_MULTI="EU"
-export GCP_PROJECT_ID="lateral-balm-318212"
+export GCP_PROJECT_ID="lateral-balm-318212" # Set this to your own project id
 
 # Dataflow Configuratiom
 export MACHINE_TYPE="n1-standard-1"
@@ -16,17 +16,14 @@ export PIPELINE_RUNNER="DataflowRunner"
 export DATAFLOW_NETWORK="dataflow-network"
 export DATAFLOW_EXTERNAL_IP="static-ip-dataflow"
 export DATAFLOW_SUBNETWORK="$DATAFLOW_NETWORK-$GCP_REGION"
-
+# Staging Bucket for Dataflow
+export GCS_BUCKET_DATAFLOW="${APPLICATION_NAME}-dataflow"
 
 export SCRIPT_PATH="$( cd -- "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 ; pwd -P )"
 export PATH_HOME=$(dirname $(dirname $SCRIPT_PATH))
 export PATH_ENV=${PATH_HOME}/env
 export PATH_SA_KEY=${PATH_ENV}/sa/sa_local.json
 export PATH_TF=${PATH_HOME}/infrastructure/terraform
-
-
-# Staging Bucket for Dataflow
-export GCS_BUCKET_DATAFLOW="${APPLICATION_NAME}-dataflow"
 
 # TF Environment Variables
 export TF_VAR_APPLICATION_NAME=${APPLICATION_NAME}

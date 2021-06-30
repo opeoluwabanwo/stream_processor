@@ -1,8 +1,10 @@
+"""Logic for kafka producer."""
 import threading
 import time
 
-from data_generator import RandomDataGenerator
 from kafka import KafkaProducer
+
+from stream_processor.publishers.data_generator import RandomDataGenerator
 
 
 class Producer(threading.Thread):
@@ -22,7 +24,7 @@ class Producer(threading.Thread):
         while not self._stop_event.is_set():
             pageview = self._data_generator.generate_pageview()
             producer.send(self._input_topic, b"", pageview)
-            time.sleep(0.1)
+            time.sleep(0.001)
         producer.close()
 
 

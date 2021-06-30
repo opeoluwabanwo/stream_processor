@@ -1,7 +1,7 @@
 """Pipeline options builder.
 
 This module is responsible for setting the default and
-custom options for privacy pipelines.
+custom options for beam pipelines.
 """
 import re
 from datetime import datetime

@@ -1,9 +1,8 @@
-"""Distributed functions for the onboarding pipeline.
+"""Distributed functions for the stream processing pipeline.
 
 This module contains logic for all distributed functions used
-within the onboarding pipeline.
+within the stream processing pipeline.
 """
-import logging
 import random
 from collections import defaultdict
 from datetime import datetime
@@ -57,11 +56,13 @@ class MessagePreprocessorDoFn(DoFn):
 
 
 class FlatMapDofns:
+    """Encapsulates functions used within map and flatmap transfroms."""
+
     @staticmethod
     def aggregate_pageviews(
         batch, streaming_engine="local", window=DoFn.TimestampParam
     ):
-
+        """Pivots and aggregates messages captured in a window."""
         # Compute the window i.e. aggregation timestamp
         if isinstance(window, str):
             aggregation_time = window
@@ -92,6 +93,7 @@ class FlatMapDofns:
 
     @staticmethod
     def generate_pageviews():
+        """Generates random stream of messages for testing."""
         fake = Faker("en_GB")
         for _ in range(100):
             webpage = f"www.website.com/{fake.uri_path()}.html"
