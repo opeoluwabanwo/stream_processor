@@ -1,6 +1,8 @@
 # Stream processing pipeline
 
-This codebase contains logic to simulate, ingest and process realtime data from various sources including kafka and pubsub.
+This codebase contains logic to simulate, ingest and process realtime data from various sources including kafka and pubsub. The diagram below provides a concise architecture of the pipeline.
+
+![architecture](stream_processor.png)
 
 ## How this repository is organised
 
