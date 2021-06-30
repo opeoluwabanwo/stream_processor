@@ -2,7 +2,7 @@ import argparse
 import logging
 import typing
 
-from apache_beam import Create, FlatMap, Map, ParDo, Pipeline, io
+from apache_beam import Create, DoFn, FlatMap, Map, ParDo, Pipeline, io
 from apache_beam.io.kafka import ReadFromKafka
 from pipeline_utils.pipeline_options_builder import PipelineOptionsBuilder
 from pipeline_utils.stream_processor_dofns import (
@@ -41,7 +41,8 @@ def run(
             )
             messages = (
                 pipeline
-                | "Read messages from PubSub" >> io.ReadFromPubSub(subscription=subscription_path)
+                | "Read messages from PubSub"
+                >> io.ReadFromPubSub(subscription=subscription_path)
                 # Simulate message structure expected by kafka
                 | "Append Keys"
                 >> Map(lambda message: (b"", message)).with_output_types(
@@ -50,27 +51,22 @@ def run(
             )
         # Simulate a local Pcollection of sample messages
         else:
-            messages = (
-                pipeline
-                | "Read messages from Kafka"
-                >> Create(FlatMapDofns.generate_pageviews()).with_output_types(
-                    typing.Tuple[bytes, bytes]
-                )
-            )
+            messages = pipeline | "Read messages from Kafka" >> Create(
+                FlatMapDofns.generate_pageviews()
+            ).with_output_types(typing.Tuple[bytes, bytes])
 
         decoded_messages = messages | "Decode and validate messages" >> ParDo(
             MessagePreprocessorDoFn(SCHEMA_PAGEVIEW)
         ).with_outputs("valid", "invalid")
 
-        _ = (
-            decoded_messages.valid
-            | "Write Stream to GCS/Local "
-            >> io.WriteToText(f"{output_path}/passthrough")
+        _ = decoded_messages.valid | "Write Stream to GCS/Local " >> io.WriteToText(
+            f"{output_path}/passthrough"
         )
         _ = (
             decoded_messages.valid
             | "Group Messages" >> GroupMessagesByFixedWindows(window_size, num_shards)
-            | "Aggregate PageViews" >> FlatMap(FlatMapDofns.aggregate_pageviews, streaming_engine)
+            | "Aggregate PageViews"
+            >> FlatMap(FlatMapDofns.aggregate_pageviews, streaming_engine)
             | "Write Aggregates to GCS/Local "
             >> io.WriteToText(f"{output_path}/aggregates")
         )

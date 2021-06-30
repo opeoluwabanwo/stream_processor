@@ -17,7 +17,7 @@ from jsonschema.exceptions import ValidationError
 
 
 class GroupMessagesByFixedWindows(PTransform):
-    """A composite transform that groups Kafka messages based on publish time
+    """A composite transform that groups messages based on publish time
     and outputs a list of tuples, each containing a message and partition key.
     """
 
@@ -58,21 +58,35 @@ class MessagePreprocessorDoFn(DoFn):
 
 class FlatMapDofns:
     @staticmethod
-    def aggregate_pageviews(batch, streaming_engine, publish_time=DoFn.TimestampParam):
-        total_views_per_postcode = defaultdict(int)
-        if streaming_engine == "local":
-            window_datetime = datetime.now()
+    def aggregate_pageviews(
+        batch, streaming_engine="local", window=DoFn.TimestampParam
+    ):
+
+        # Compute the window i.e. aggregation timestamp
+        if isinstance(window, str):
+            aggregation_time = window
         else:
-            window_datetime = datetime.utcfromtimestamp(float(publish_time)).strftime(
-                    "%Y-%m-%d %H:%M:%S.%f")
+            ts_format = "%Y-%m-%d %H:%M:%S.%f"
+            if streaming_engine == "local":
+                aggregation_time = datetime.now().strftime(ts_format)
+            else:
+                aggregation_time = datetime.utcfromtimestamp(float(window)).strftime(
+                    ts_format
+                )
+
+        # Compute total views per postcode
+        total_views_per_postcode = defaultdict(int)
         _, pageviews = batch
         for pageview in pageviews:
             postcode = pageview["postcode"]
             total_views_per_postcode[postcode] += 1
+
+        # Emit aggregate results
+        for postcode, total_views in total_views_per_postcode.items():
             result = {
                 "postcode": postcode,
-                "window": window_datetime,
-                "pageviews": total_views_per_postcode[postcode],
+                "aggregation_time": aggregation_time,
+                "total_views": total_views,
             }
             yield dumps(result, sort_keys=True, default=str)
 
@@ -81,10 +95,11 @@ class FlatMapDofns:
         fake = Faker("en_GB")
         for _ in range(100):
             webpage = f"www.website.com/{fake.uri_path()}.html"
+            postcode = fake.postcode().split()[0]
             # This reduces the sample postcode space inorder to enable
-            # proper testing otherwise most post pageviews will be 
+            # proper testing otherwise most post pageviews will be
             # aggregated to 1.
-            postcode = fake.random_element(("SW8", "E16", "WC5", "N17"))
+            # postcode = fake.random_element(("SW8", "E16", "WC5", "N17"))
             data = {
                 "user_id": fake.random_int(),
                 "postcode": postcode,
