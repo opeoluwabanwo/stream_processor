@@ -21,6 +21,7 @@ class Producer(threading.Thread):
     def run(self):
         producer = KafkaProducer(bootstrap_servers=self._servers)
 
+        # Publish pageview evets every 0.001 secs (100k in 100secs)
         while not self._stop_event.is_set():
             pageview = self._data_generator.generate_pageview()
             producer.send(self._input_topic, b"", pageview)
