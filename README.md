@@ -23,8 +23,9 @@ stream_processor
 ## Requirements and Assumptions
 1. It is assumed that you have docker and docker-compose installed.
 2. Create a google cloud project [here](https://cloud.google.com/free). The $300 free credit should be enough.
-3. Create a service account with an `Editor` role and download the service account key
-4. Copy the key into `env/sa/sa_local.json`. Note the folder names and create if needed
+3. Edit the `GCP_PROJECT_ID` with the allocated project_id
+4. Create a service account with an `Editor` role and download the service account key
+5. Copy the key into `env/sa/sa_local.json`. Note the folder names and create if needed
 
 ## How to use
 ```bash
