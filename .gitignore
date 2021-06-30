@@ -3,7 +3,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+.DS_Store
 # C extensions
 *.so
 
@@ -34,3 +34,4 @@ env/
 beam-temp*
 .terraform*
 results
+states*
