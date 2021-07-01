@@ -7,7 +7,7 @@ PYTHON := /usr/bin/env python3
 
 raise: ## Create local container e.g. make raise region=eu env=dev
 	@echo "# Create local container (can take a few mins)"
-#	docker build -t stream-processor-img .
+	docker build -t stream-processor-img .
 	docker rm -f stream-processor-cont
 	docker run -itd --network=host --name stream-processor-cont --volume ${PWD}:/app/ stream-processor-img
 

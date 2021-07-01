@@ -16,7 +16,7 @@ gcloud services enable \
 # Apply terraform modules
 cd ${PATH_TF}
 
-terraform init
+terraform init -reconfigure -backend-config=${PATH_TF_CONFIG}
 
 terraform plan
 terraform apply -auto-approve

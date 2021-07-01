@@ -24,6 +24,7 @@ export PATH_HOME=$(dirname $(dirname $SCRIPT_PATH))
 export PATH_ENV=${PATH_HOME}/env
 export PATH_SA_KEY=${PATH_ENV}/sa/sa_local.json
 export PATH_TF=${PATH_HOME}/infrastructure/terraform
+export PATH_TF_CONFIG=${PATH_TF}/backend.config
 
 # TF Environment Variables
 export TF_VAR_APPLICATION_NAME=${APPLICATION_NAME}
@@ -40,6 +41,10 @@ export TF_VAR_DATAFLOW_SUBNETWORK=${DATAFLOW_SUBNETWORK}
 
 export TF_VAR_PAGEVIEW_PUBSUB_TOPIC="topic_pageviews"
 export TF_VAR_PAGEVIEW_PUBSUB_SUB="sub_pageviews"
+
+cat >${PATH_TF_CONFIG} <<EOL
+path = "states/${GCP_PROJECT_ID}/terraform.tfstate"
+EOL
 
 # Gcloud Config & Credentials
 gcloud auth activate-service-account --key-file=${PATH_SA_KEY}

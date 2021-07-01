@@ -30,7 +30,7 @@ stream_processor
 ## How to use
 ```bash
 # Clone the public repository and cd into it
-git clone git@github.com:opeoluwabanwo/stream_processor.git
+git clone https://github.com/opeoluwabanwo/stream_processor.git
 
 
 # Create local dev. environment
