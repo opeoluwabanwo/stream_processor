@@ -3,6 +3,7 @@
 This module contains logic for all distributed functions used
 within the stream processing pipeline.
 """
+import logging
 import random
 from collections import defaultdict
 from datetime import datetime
@@ -48,6 +49,7 @@ class MessagePreprocessorDoFn(DoFn):
         """Decode and validate message against schema."""
         _, message_value = message
         pageview = loads(message_value)
+        logging.info(f"Received Message: {message_value}")
         try:
             validate(pageview, self._schema)
             yield TaggedOutput("valid", pageview)
@@ -97,11 +99,12 @@ class FlatMapDofns:
         fake = Faker("en_GB")
         for _ in range(100):
             webpage = f"www.website.com/{fake.uri_path()}.html"
-            postcode = fake.postcode().split()[0]
+            # postcode = fake.postcode().split()[0]
+
             # This reduces the sample postcode space inorder to enable
             # proper testing otherwise most post pageviews will be
             # aggregated to 1.
-            # postcode = fake.random_element(("SW8", "E16", "WC5", "N17"))
+            postcode = fake.random_element(("SW8", "SE8", "E16", "WC5", "N17"))
             data = {
                 "user_id": fake.random_int(),
                 "postcode": postcode,

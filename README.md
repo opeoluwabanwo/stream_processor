@@ -7,9 +7,12 @@ This codebase contains logic to simulate, ingest and process realtime data from 
 ## How this repository is organised
 
 This repo has the following folder structure. `Poetry` was used to initialise folder structure.
+📢 **Check the `data` folder for some sample outputs.**
 
 ```text
 stream_processor
+└───env
+|   └───sa: Contains service account used by terraform and cloud services
 └───infrastucture
 |   └───scripts: Contains shell scripts for setting environment variables and running terraform
 │   └───terraform: Contains all the modules required by terraform to provision the required infrastucture
@@ -17,6 +20,7 @@ stream_processor
 |   └───beam: Contains codebase for pipelines created with the apache beam sdk
 |   |   └───pipeline_utils: Contains utility functions used in the beam pipeline
 |   |   └───schemas: Contains Json schema for data validation
+|   |   └───data: Contains results from sample pipeline runs
 |   └───publishers: Contains code for generating random data for both kafka and pubsub
 |   └───tests
 ```

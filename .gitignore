@@ -30,7 +30,7 @@ MANIFEST
 vendor/
 .venv
 .vscode
-env/
+env/sa/sa_local.json
 beam-temp*
 .terraform/
 results

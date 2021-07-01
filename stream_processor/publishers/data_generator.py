@@ -1,5 +1,6 @@
 """Random webpage view event generator."""
 
+import logging
 from json import dumps
 
 from faker import Faker
@@ -20,4 +21,5 @@ class RandomDataGenerator:
             "webpage": webpage,
             "timestamp": self._fake.unix_time(),
         }
+        logging.info(f"Publishing event: {data}")
         return dumps(data).encode("utf-8")
