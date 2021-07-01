@@ -29,7 +29,7 @@ stream_processor
 2. Create a google cloud project [here](https://cloud.google.com/free). The $300 free credit should be enough.
 3. Edit the `GCP_PROJECT_ID` with the allocated project_id
 4. Create a service account with an `Editor` role and download the service account key
-5. Copy the key into `env/sa/sa_local.json`. Note the folder names and create if needed
+5. Copy the key into `env/sa/sa_local.json`. You can also rename `dummy_file.json` to `sa_local.json` and paste in the key contents
 
 ## How to use
 ```bash
