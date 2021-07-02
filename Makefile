@@ -9,7 +9,7 @@ raise: ## Create local container e.g. make raise region=eu env=dev
 	@echo "# Create local container (can take a few mins)"
 	docker build -t stream-processor-img .
 	docker rm -f stream-processor-cont
-	docker run -itd --network=host --name stream-processor-cont --volume ${PWD}:/app/ stream-processor-img
+	docker run -itd --name stream-processor-cont --volume ${PWD}:/app/ stream-processor-img
 
 ## Provison GCP cloud infrastructure. This is required if
 ## the application is to be deployed on GCP.
@@ -48,7 +48,7 @@ run-app-with-kafka:
 	docker exec --detach stream-processor-cont bash -c 'python /app/stream_processor/publishers/kafka_publisher.py'
 
 	@echo "# Run the stream processor app (consumes kafka messsages)"
-	docker exec stream-processor-cont bash -c 'cd /app/infrastructure/scripts && source config.sh && cd /app && python stream_processor/beam/stream_processor.py --runner DirectRunner --streaming_engine kafka'
+	docker exec stream-processor-cont bash -c 'cd /app/infrastructure/scripts && source config.sh && cd /app/stream_processor/beam && python stream_processor.py --streaming_engine kafka'
 
 reset: ## Stop container (terminates all processes)
 	@echo "# Stop running container"
