@@ -43,7 +43,7 @@ run-app-with-pubsub:
 ## However it works using the DataflowRunnner. In this case, remove the --runnner arg (default is set to DataflowRunner) and provide a bucket as output path e.g --output_path gs://stream-processor/results
 run-app-with-kafka:
 	@echo "# Create local kafka stack"
-#	cd ./infrastructure && docker compose down && docker compose up -d
+	cd ./infrastructure && docker compose down && docker compose up -d
 	@echo "# Start the kafka producer"
 	docker exec --detach stream-processor-cont bash -c 'python /app/stream_processor/publishers/kafka_publisher.py'
 
